@@ -1,6 +1,6 @@
 import { StyleSheet, TouchableOpacity, Text, TextInput, View, ActivityIndicator } from 'react-native';
-import { useEffect, useState } from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 
 export default function IngredienteEdit() {
     const param = useLocalSearchParams();
@@ -22,6 +22,12 @@ export default function IngredienteEdit() {
     useEffect(() => {
         getIngrediente();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            getIngrediente();
+        }, [])
+    );
 
     return (
         <View style={{ padding: 40 }}>

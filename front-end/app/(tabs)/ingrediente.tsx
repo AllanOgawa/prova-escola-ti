@@ -1,35 +1,33 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { ListIngrediente } from '@/components/ListIngrediente';
 import { router } from 'expo-router';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function IngredienteScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Ingredientes</ThemedText>
+      headerBackgroundColor={{ light: '#597400', dark: '#597400' }}
+      headerImage={<MaterialCommunityIcons size={250} name="food-variant" style={styles.headerImage} />}>
+      <View style={styles.titleContainer}>
+        <Text style={{ fontSize: 30, fontWeight: "bold" }}>INGREDIENTES</Text>
         <TouchableOpacity style={styles.button}
           onPress={() => router.push(`../(ingrediente)/create`)}>
           <Text style={{ fontSize: 20, color: "white" }}>Cadastrar Ingrediente</Text>
         </TouchableOpacity>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
+      </View>
+      <View style={styles.stepContainer}>
         <ListIngrediente />
-      </ThemedView>
+      </View>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
+    color: 'white',
+    bottom: 0,
+    left: 10,
     position: 'absolute',
   },
   stepContainer: {
@@ -43,7 +41,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: '#00ca00',
     padding: 10,
     borderRadius: 16
 

@@ -1,12 +1,15 @@
-import { StyleSheet, TouchableOpacity, Text, TextInput, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, TextInput, View, ScrollView } from 'react-native';
 import { useState } from 'react';
 import { router } from 'expo-router';
 
 export default function ReceitaCreate() {
     const [nome, setNome] = useState('');
+    const [tempo, setTempo] = useState('');
+    const [custo, setCusto] = useState('');
 
     return (
-        <View style={{ padding: 40 }}>
+        <ScrollView style={{ padding: 40 }}>
+
             <Text style={{ fontSize: 20 }}>
                 Nome:
             </Text>
@@ -15,6 +18,27 @@ export default function ReceitaCreate() {
                 onChangeText={setNome}
                 value={nome}
             />
+
+            <Text style={{ fontSize: 20 }}>
+                Tempo de Preparo:
+            </Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={setTempo}
+                value={tempo}
+                keyboardType="numeric"
+            />
+
+            <Text style={{ fontSize: 20 }}>
+                Custo Aproximado:
+            </Text>
+            <TextInput
+                style={styles.input}
+                onChangeText={setCusto}
+                value={custo}
+                keyboardType="numeric"
+            />
+
             <TouchableOpacity style={styles.button}
                 onPress={() => {
                     try {
@@ -25,18 +49,20 @@ export default function ReceitaCreate() {
                                 'Content-Type': 'application/json',
                             },
                             body: JSON.stringify({
-                                nome: nome
+                                nome: nome,
+                                tempoPreparo: tempo,
+                                custoAproximado: custo,
                             }),
                         });
-                        router.push("/(tabs)/ingrediente");
+                        router.push("/(tabs)");
                     } catch (error) {
                         console.error(error);
                     }
                 }}
             >
-                <Text style={{ fontSize: 20, color: "white" }}>Cadastrar Ingrediente</Text>
+                <Text style={{ fontSize: 20, color: "white" }}>Cadastrar Receita</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 }
 
@@ -51,7 +77,7 @@ const styles = StyleSheet.create({
     },
     button: {
         alignItems: 'center',
-        backgroundColor: 'green',
+        backgroundColor: '#00ca00',
         padding: 10,
         borderRadius: 16
 

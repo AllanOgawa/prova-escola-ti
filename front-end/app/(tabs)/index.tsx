@@ -1,35 +1,33 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import { router } from 'expo-router';
 import { ListReceita } from '@/components/ListReceita';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 export default function ReceitaScreen() {
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#D0D0D0', dark: '#353636' }}
-      headerImage={<Ionicons size={310} name="code-slash" style={styles.headerImage} />}>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Receitas</ThemedText>
+      headerBackgroundColor={{ light: 'red', dark: '#8f0000' }}
+      headerImage={<MaterialCommunityIcons size={250} name="food" style={styles.headerImage} />}>
+      <View style={styles.titleContainer}>
+        <Text style={{ fontSize: 30, fontWeight: "bold" }}>RECEITAS</Text>
         <TouchableOpacity style={styles.button}
           onPress={() => router.push(`../(receita)/create`)}>
           <Text style={{ fontSize: 20, color: "white" }}>Cadastrar Receita</Text>
         </TouchableOpacity>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
+      </View>
+      <View style={styles.stepContainer}>
         <ListReceita />
-      </ThemedView>
+      </View>
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   headerImage: {
-    color: '#808080',
-    bottom: -90,
-    left: -35,
+    color: 'white',
+    bottom: 0,
+    left: 10,
     position: 'absolute',
   },
   stepContainer: {
@@ -43,7 +41,7 @@ const styles = StyleSheet.create({
   },
   button: {
     alignItems: 'center',
-    backgroundColor: 'green',
+    backgroundColor: '#00ca00',
     padding: 10,
     borderRadius: 16
   },

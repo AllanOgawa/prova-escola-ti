@@ -22,11 +22,12 @@ export class IngredienteService {
   }
 
   async update(id: string, ingrediente: UpdateIngredienteDto): Promise<Ingrediente> {
-    return await this.ingredienteModel.findByIdAndUpdate(id, ingrediente);
+    return await this.ingredienteModel.findByIdAndUpdate(id, ingrediente, { new: true });
   }
 
-  async remove(id: string): Promise<Ingrediente> {
-    return await this.ingredienteModel.findByIdAndDelete(id);
+  async remove(id: string): Promise<Ingrediente[]> {
+    await this.ingredienteModel.findByIdAndDelete(id);
+    return await this.ingredienteModel.find().exec();
   }
 
 }

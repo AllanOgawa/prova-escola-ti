@@ -1,6 +1,6 @@
 import { Ingrediente } from '@/schemas/ingrediente';
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 export function ListIngrediente() {
@@ -24,10 +24,16 @@ export function ListIngrediente() {
     }, []);
 
 
+    useFocusEffect(
+        useCallback(() => {
+            getIngredientes();
+        }, [])
+    );
+
     function CardIngrediente({ ingrediente }: { ingrediente: Ingrediente }) {
         return (
             <View style={styles.card}>
-                <Text style={{ width: "70%", color: "white", fontSize: 30 }}>{ingrediente.nome}</Text>
+                <Text style={{ width: "70%", color: "white", fontSize: 25 }}>{ingrediente.nome}</Text>
                 <View style={{ width: "30%" }}>
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: "blue" }]}
@@ -45,8 +51,10 @@ export function ListIngrediente() {
                                         Accept: 'application/json',
                                         'Content-Type': 'application/json',
                                     },
+                                }).then(async response => {
+                                    const json = await response.json();
+                                    setIngredientes(json);
                                 });
-                                getIngredientes();
                             } catch (error) {
                                 console.error(error);
                             }

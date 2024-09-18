@@ -1,6 +1,6 @@
 import { Receita } from '@/schemas/receita';
-import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, FlatList, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 export function ListReceita() {
@@ -23,15 +23,25 @@ export function ListReceita() {
         getReceitas();
     }, []);
 
+    useFocusEffect(
+        useCallback(() => {
+            getReceitas();
+        }, [])
+    );
 
     function CardReceita({ receita }: { receita: Receita }) {
         return (
             <View style={styles.card}>
                 <View style={{ width: "70%" }}>
-                    <Text style={{ color: "white", fontSize: 30 }}>{receita.nome}</Text>
-                    <Text style={{ color: "white", fontSize: 20 }}>Tempo Preparao: {receita.tempoPreparo}</Text>
-                    <Text style={{ color: "white", fontSize: 20 }}>Custo Aproximado: {receita.custoAproximado}</Text>
-                    <Text style={{ color: "white", fontSize: 20 }}>Ingredientes: {receita.custoAproximado}</Text>
+                    <Text style={{ color: "white", fontSize: 25, fontWeight: "bold" }}>{receita.nome.toUpperCase()}</Text>
+                    <Text style={{ color: "white", fontSize: 20, marginTop: 15 }}>● Tempo Preparao: {receita.tempoPreparo} min</Text>
+                    <Text style={{ color: "white", fontSize: 20 }}>● Custo Aproximado: R${receita.custoAproximado}</Text>
+                    <Text style={{ color: "white", fontSize: 20 }}>● Ingredientes:</Text>
+                    {
+                        receita.ingredientes.map(item =>
+                            <Text key={item._id} style={{ color: "white", fontSize: 18, marginLeft: 15 }}>- {item.nome}</Text>
+                        )
+                    }
                 </View>
                 <View style={{ width: "30%" }}>
                     <TouchableOpacity
@@ -40,6 +50,14 @@ export function ListReceita() {
                     >
                         <Text style={{ fontSize: 20, color: "white" }}>Alterar Receita</Text>
                     </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={[styles.button, { backgroundColor: "#b337c2", marginTop: 20 }]}
+                        onPress={() => router.push(`../(receita)/updateIngrediente/${receita._id}`)}
+                    >
+                        <Text style={{ fontSize: 20, color: "white" }}>Alterar Ingredientes</Text>
+                    </TouchableOpacity>
+
                     <TouchableOpacity
                         style={[styles.button, { backgroundColor: "red", marginTop: 20 }]}
                         onPress={() => {
@@ -50,8 +68,10 @@ export function ListReceita() {
                                         Accept: 'application/json',
                                         'Content-Type': 'application/json',
                                     },
+                                }).then(async response => {
+                                    const json = await response.json();
+                                    setReceitas(json);
                                 });
-                                getReceitas();
                             } catch (error) {
                                 console.error(error);
                             }

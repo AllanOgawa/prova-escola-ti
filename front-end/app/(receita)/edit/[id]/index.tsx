@@ -1,17 +1,21 @@
 import { StyleSheet, TouchableOpacity, Text, TextInput, View, ActivityIndicator } from 'react-native';
-import { useEffect, useState } from 'react';
-import { router, useLocalSearchParams } from 'expo-router';
+import { useCallback, useEffect, useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 
-export default function IngredienteEdit() {
+export default function ReceitaEdit() {
     const param = useLocalSearchParams();
     const [isLoading, setLoading] = useState(true);
     const [nome, setNome] = useState('');
+    const [tempo, setTempo] = useState('');
+    const [custo, setCusto] = useState('');
 
-    const getIngrediente = async () => {
+    const getReceita = async () => {
         try {
-            const response = await fetch(`http://localhost:3000/ingrediente/${param.id}`);
+            const response = await fetch(`http://localhost:3000/receita/${param.id}`);
             const json = await response.json();
             setNome(json.nome);
+            setTempo(json.tempoPreparo);
+            setCusto(json.custoAproximado);
         } catch (error) {
             console.error(error);
         } finally {
@@ -20,8 +24,14 @@ export default function IngredienteEdit() {
     };
 
     useEffect(() => {
-        getIngrediente();
+        getReceita();
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            getReceita();
+        }, [])
+    );
 
     return (
         <View style={{ padding: 40 }}>
@@ -37,26 +47,47 @@ export default function IngredienteEdit() {
                         onChangeText={setNome}
                         value={nome}
                     />
+
+                    <Text style={{ fontSize: 20 }}>
+                        Tempo de Preparo:
+                    </Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setTempo}
+                        value={tempo}
+                    />
+
+                    <Text style={{ fontSize: 20 }}>
+                        Custo Aproximado:
+                    </Text>
+                    <TextInput
+                        style={styles.input}
+                        onChangeText={setCusto}
+                        value={custo}
+                    />
+
                     <TouchableOpacity style={styles.button}
                         onPress={() => {
                             try {
-                                fetch(`http://localhost:3000/ingrediente/${param.id}`, {
+                                fetch(`http://localhost:3000/receita/${param.id}`, {
                                     method: 'PUT',
                                     headers: {
                                         Accept: 'application/json',
                                         'Content-Type': 'application/json',
                                     },
                                     body: JSON.stringify({
-                                        nome: nome
+                                        nome: nome,
+                                        tempoPreparo: tempo,
+                                        custoAproximado: custo
                                     }),
                                 });
-                                router.push("/(tabs)/ingrediente");
+                                router.push("/(tabs)");
                             } catch (error) {
                                 console.error(error);
                             }
                         }}
                     >
-                        <Text style={{ fontSize: 20, color: "white" }}>Salvar Alteração do Ingrediente</Text>
+                        <Text style={{ fontSize: 20, color: "white" }}>Salvar Alteração da Receita</Text>
                     </TouchableOpacity>
                 </View>
             )}

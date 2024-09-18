@@ -4,25 +4,18 @@ import { UpdateReceitaDto } from './dto/update-receita.dto';
 import { Receita } from './schema/receita.schema';
 import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
-import { Ingrediente } from 'src/ingrediente/schema/receita.schema';
-import { UpdateIngredienteDto } from 'src/ingrediente/dto/update-ingrediente.dto';
+import { CreateIngredienteDto } from 'src/ingrediente/dto/create-ingrediente.dto';
 
 @Injectable()
 export class ReceitaService {
   constructor(@InjectModel(Receita.name) private receitaModel: Model<Receita>) { }
 
-  @InjectModel(Ingrediente.name) private ingredienteModel: Model<Ingrediente>
-
-
   async findAll(): Promise<Receita[]> {
-    const receitas = await this.receitaModel.find().exec();
-    const ingredientes = await this.ingredienteModel.find().exec();
-
-    return receitas
+    return this.receitaModel.find().populate('ingredientes', '_id nome').exec();
   }
 
   async findById(id: string): Promise<Receita> {
-    return await this.receitaModel.findById(id);
+    return await this.receitaModel.findById(id).populate('ingredientes', '_id nome');
   }
 
   async create(receita: CreateReceitaDto): Promise<Receita> {
@@ -30,14 +23,23 @@ export class ReceitaService {
   }
 
   async update(id: string, receita: UpdateReceitaDto): Promise<Receita> {
-    return await this.receitaModel.findByIdAndUpdate(id, receita);
+    return await this.receitaModel.findByIdAndUpdate(id, receita, { new: true });
   }
 
-  async remove(id: string): Promise<Receita> {
-    return await this.receitaModel.findByIdAndDelete(id);
+  async remove(id: string): Promise<Receita[]> {
+    await this.receitaModel.findByIdAndDelete(id);
+    return this.receitaModel.find().populate('ingredientes', '_id nome').exec();
   }
 
-  // async addIngrediente(id: string, ingredientes: UpdateIngredienteDto): Promise<Receita> {
-  //   return await this.receitaModel.findByIdAndDelete(id);
-  // }
+  async addIngrediente(id: string, ingrediente: CreateIngredienteDto): Promise<Receita> {
+    const receita = await this.receitaModel.findById(id).populate('ingredientes', '_id nome');
+    receita.ingredientes.push(ingrediente)
+    return await this.receitaModel.findByIdAndUpdate(id, receita, { new: true }).populate('ingredientes', '_id nome');
+  }
+
+  async removeIngrediente(id: string, ingredientes: CreateIngredienteDto[]): Promise<Receita> {
+    const receita = await this.receitaModel.findById(id).populate('ingredientes', '_id nome');
+    receita.ingredientes = ingredientes;
+    return await this.receitaModel.findByIdAndUpdate(id, receita, { new: true }).populate('ingredientes', '_id nome');
+  }
 }
